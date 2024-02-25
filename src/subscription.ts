@@ -2,7 +2,7 @@ import {
   OutputSchema as RepoEvent,
   isCommit,
 } from './lexicon/types/com/atproto/sync/subscribeRepos'
-import parsePost from './openai/parse';
+import parsePost, { convertAtUrlToClickableLink } from './openai/parse';
 import { FirehoseSubscriptionBase, getOpsByType } from './util/subscription'
 import { locationKeywords, techKeywords } from './util/terms'
 import { BskyAgent } from '@atproto/api'
@@ -48,9 +48,9 @@ export class FirehoseSubscription extends FirehoseSubscriptionBase {
 
         if (
           authorsTable[create.author] || (
-          matchesKeywordCaseInsensitive(create.record.text.toLowerCase(), locationKeywords)
+            matchesKeywordCaseInsensitive(create.record.text.toLowerCase(), locationKeywords)
 
-          && matchesKeywordCaseInsensitive(create.record.text.toLowerCase(), techKeywords))
+            && matchesKeywordCaseInsensitive(create.record.text.toLowerCase(), techKeywords))
         )
           // check if text contains text content from 1st array and 2nd array
           // define arrays 1 and 2
@@ -81,21 +81,29 @@ export class FirehoseSubscription extends FirehoseSubscriptionBase {
         //   let d = dayjs(post?.date + " " + post?.time)
         //   create["eventFormattedTime"] = d.toISOString();
         // }
- 
-        // REPOST
-        await agent.post({
-          text: `
-            New event alert!
 
-            Date: ${post?.date ?? 'N/A'}
-            Time: ${post?.time ?? 'N/A'}
-            Details: ${create.uri}
-          `,
-          langs: ["en-US"],
-          createdAt: new Date().toISOString()
-        })
+
+        let lnk = convertAtUrlToClickableLink(create.uri)
+
+        if ((post?.date && post.date != '') || post?.time) {
+
+          // REPOST
+          await agent.post({
+            text: `
+              New event alert!
+  
+              Date: ${post?.date ?? 'N/A'}
+              Time: ${post?.time ?? 'N/A'}
+              Details: ${lnk}
+  
+  
+                `,
+            langs: ["en-US"],
+            createdAt: new Date().toISOString()
+          })
+        }
       }
-       catch (e) {
+      catch (e) {
         console.log(e)
       }
     }))

@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import OpenAI from "openai";
-const openai = new OpenAI({apiKey: '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'});
+const openai = new OpenAI({ apiKey: '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' });
 
 
 type EventInfo = {
@@ -34,7 +34,6 @@ export function convertAtUrlToClickableLink(d: string) {
     return url;
 }
 
-convertAtUrlToClickableLink('at://did:plc:mywmpivhufzgn4f2a2v7fba4/app.bsky.feed.post/3kmbolycc4k2e')
 
 export default async function parsePost(post: string): Promise<EventInfo | null> {
     const completion = await openai.chat.completions.create({
