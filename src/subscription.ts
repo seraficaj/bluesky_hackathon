@@ -3,6 +3,9 @@ import {
   isCommit,
 } from './lexicon/types/com/atproto/sync/subscribeRepos'
 import { FirehoseSubscriptionBase, getOpsByType } from './util/subscription'
+import { locationKeywords, techKeywords } from './util/terms'
+
+const authorsTable = {}
 
 export class FirehoseSubscription extends FirehoseSubscriptionBase {
   async handleEvent(evt: RepoEvent) {
@@ -13,25 +16,37 @@ export class FirehoseSubscription extends FirehoseSubscriptionBase {
     // Just for fun :)
     // Delete before actually using
     for (const post of ops.posts.creates) {
-      console.log(post.record.text)
     }
 
     const postsToDelete = ops.posts.deletes.map((del) => del.uri)
     const postsToCreate = ops.posts.creates
       .filter((create) => {
         // only alf-related posts
-        return create.record.text.toLowerCase().includes('alf')
+        if (
+          authorsTable[create.author] ||
+          create.record.text.toLowerCase().includes('san francisco')
+        )
+          // check if text contains text content from 1st array and 2nd array
+          // define arrays 1 and 2
+          // regex
+          return true
       })
       .map((create) => {
         // map alf-related posts to a db row
+        console.log(create)
         return {
           uri: create.uri,
           cid: create.cid,
           replyParent: create.record?.reply?.parent.uri ?? null,
           replyRoot: create.record?.reply?.root.uri ?? null,
           indexedAt: new Date().toISOString(),
+          author: create.author,
         }
       })
+
+    postsToCreate.map(({ author }) => {
+      authorsTable[author] = true
+    })
 
     if (postsToDelete.length > 0) {
       await this.db

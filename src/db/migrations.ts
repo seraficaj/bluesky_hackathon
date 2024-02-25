@@ -16,8 +16,10 @@ migrations['001'] = {
       .addColumn('cid', 'varchar', (col) => col.notNull())
       .addColumn('replyParent', 'varchar')
       .addColumn('replyRoot', 'varchar')
+      .addColumn('author', 'varchar')
       .addColumn('indexedAt', 'varchar', (col) => col.notNull())
       .execute()
+
     await db.schema
       .createTable('sub_state')
       .addColumn('service', 'varchar', (col) => col.primaryKey())
