@@ -1,5 +1,5 @@
 import OpenAI from "openai";
-const openai = new OpenAI();
+const openai = new OpenAI({apiKey: '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'});
 
 
 type EventInfo = {

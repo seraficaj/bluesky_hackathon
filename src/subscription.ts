@@ -5,6 +5,20 @@ import {
 import parsePost from './openai/parse';
 import { FirehoseSubscriptionBase, getOpsByType } from './util/subscription'
 import { locationKeywords, techKeywords } from './util/terms'
+import { BskyAgent } from '@atproto/api'
+import dayjs from 'dayjs'
+
+
+const agent = new BskyAgent({
+  service: 'https://bsky.social'
+});
+
+(async () => {
+  await agent.login({
+    identifier: 'sfevents.bsky.social',
+    password: 'BigRoundOrangeBall'
+  });
+})();
 
 const authorsTable = {}
 
@@ -56,18 +70,33 @@ export class FirehoseSubscription extends FirehoseSubscriptionBase {
         }
       })
 
-    let rr = await postsToCreate.map(async (create) => {
+    let rr = await Promise.all(postsToCreate.map(async (create) => {
       try {
 
         let post = await parsePost(create.text)
 
+        // if (post?.date !== '' && post?.time != '') {
+        //   let d = dayjs(post?.date + " " + post?.time)
+        //   create["eventFormattedTime"] = d.toISOString();
+        // }
+ 
         // REPOST
+        await agent.post({
+          text: `
+            New event alert!
 
-
-      } catch (e) {
+            Date: ${post?.date ?? 'N/A'}
+            Time: ${post?.time ?? 'N/A'}
+            Details: ${create.uri}
+          `,
+          langs: ["en-US"],
+          createdAt: new Date().toISOString()
+        })
+      }
+       catch (e) {
         console.log(e)
       }
-    })
+    }))
 
 
     postsToCreate.map(({ author }) => {
