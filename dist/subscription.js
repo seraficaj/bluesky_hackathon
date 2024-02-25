@@ -12,6 +12,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.FirehoseSubscription = void 0;
 const subscribeRepos_1 = require("./lexicon/types/com/atproto/sync/subscribeRepos");
 const subscription_1 = require("./util/subscription");
+const terms_1 = require("./util/terms");
+const authorsTable = {};
+function matchesKeywordCaseInsensitive(input, keywords) {
+    return keywords.some(keyword => {
+        const regex = new RegExp(keyword, 'i'); // 'i' flag for case-insensitive
+        return regex.test(input);
+    });
+}
 class FirehoseSubscription extends subscription_1.FirehoseSubscriptionBase {
     handleEvent(evt) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -22,24 +30,33 @@ class FirehoseSubscription extends subscription_1.FirehoseSubscriptionBase {
             // Just for fun :)
             // Delete before actually using
             for (const post of ops.posts.creates) {
-                console.log(post.record.text);
             }
             const postsToDelete = ops.posts.deletes.map((del) => del.uri);
             const postsToCreate = ops.posts.creates
                 .filter((create) => {
                 // only alf-related posts
-                return create.record.text.toLowerCase().includes('alf');
+                if (authorsTable[create.author] || (matchesKeywordCaseInsensitive(create.record.text.toLowerCase(), terms_1.locationKeywords)
+                    && matchesKeywordCaseInsensitive(create.record.text.toLowerCase(), terms_1.techKeywords)))
+                    // check if text contains text content from 1st array and 2nd array
+                    // define arrays 1 and 2
+                    // regex
+                    return true;
             })
                 .map((create) => {
                 var _a, _b, _c, _d, _e, _f;
                 // map alf-related posts to a db row
+                console.log(create);
                 return {
                     uri: create.uri,
                     cid: create.cid,
                     replyParent: (_c = (_b = (_a = create.record) === null || _a === void 0 ? void 0 : _a.reply) === null || _b === void 0 ? void 0 : _b.parent.uri) !== null && _c !== void 0 ? _c : null,
                     replyRoot: (_f = (_e = (_d = create.record) === null || _d === void 0 ? void 0 : _d.reply) === null || _e === void 0 ? void 0 : _e.root.uri) !== null && _f !== void 0 ? _f : null,
                     indexedAt: new Date().toISOString(),
+                    author: create.author,
                 };
+            });
+            postsToCreate.map(({ author }) => {
+                authorsTable[author] = true;
             });
             if (postsToDelete.length > 0) {
                 yield this.db

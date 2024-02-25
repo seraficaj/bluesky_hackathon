@@ -23,7 +23,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const whatsAlf = __importStar(require("./whats-alf"));
+const whatsAlf = __importStar(require("./sf-irl"));
 const algos = {
     [whatsAlf.shortname]: whatsAlf.handler,
 };

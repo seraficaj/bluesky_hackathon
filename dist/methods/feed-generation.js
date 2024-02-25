@@ -22,6 +22,9 @@ function default_1(server, ctx) {
         if (feedUri.hostname !== ctx.cfg.publisherDid ||
             feedUri.collection !== 'app.bsky.feed.generator' ||
             !algo) {
+            console.log(algos_1.default);
+            console.log(feedUri);
+            console.log(ctx.cfg.publisherDid);
             throw new xrpc_server_1.InvalidRequestError('Unsupported algorithm', 'UnsupportedAlgorithm');
         }
         /**

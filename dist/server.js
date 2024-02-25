@@ -61,7 +61,7 @@ class FeedGenerator {
         return __awaiter(this, void 0, void 0, function* () {
             yield (0, db_1.migrateToLatest)(this.db);
             this.firehose.run(this.cfg.subscriptionReconnectDelay);
-            this.server = this.app.listen(this.cfg.port, this.cfg.listenhost);
+            this.server = this.app.listen(this.cfg.port);
             yield events_1.default.once(this.server, 'listening');
             return this.server;
         });

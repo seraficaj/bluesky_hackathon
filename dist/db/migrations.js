@@ -27,6 +27,7 @@ migrations['001'] = {
                 .addColumn('cid', 'varchar', (col) => col.notNull())
                 .addColumn('replyParent', 'varchar')
                 .addColumn('replyRoot', 'varchar')
+                .addColumn('author', 'varchar')
                 .addColumn('indexedAt', 'varchar', (col) => col.notNull())
                 .execute();
             yield db.schema

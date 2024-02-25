@@ -12,25 +12,31 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.FEEDGEN_HOSTNAME = exports.FEEDGEN_PUBLISHER_DID = void 0;
 const dotenv_1 = __importDefault(require("dotenv"));
 const server_1 = __importDefault(require("./server"));
+// SET THIS TO YOUR DID
+// You can find your accounts DID by going to
+// https://bsky.social/xrpc/com.atproto.identity.resolveHandle?handle=${YOUR_HANDLE}
+exports.FEEDGEN_PUBLISHER_DID = 'did:plc:5s4zztsxcuzb66q6cjumqwqr';
+exports.FEEDGEN_HOSTNAME = 'bluesky-sf-irl-05af32605927.herokuapp.com';
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c, _d, _e, _f, _g, _h;
+    var _a, _b, _c, _d;
     dotenv_1.default.config();
-    const hostname = (_a = maybeStr(process.env.FEEDGEN_HOSTNAME)) !== null && _a !== void 0 ? _a : 'example.com';
-    const serviceDid = (_b = maybeStr(process.env.FEEDGEN_SERVICE_DID)) !== null && _b !== void 0 ? _b : `did:web:${hostname}`;
+    const hostname = exports.FEEDGEN_HOSTNAME;
+    const serviceDid = exports.FEEDGEN_PUBLISHER_DID;
     const server = server_1.default.create({
-        port: (_c = maybeInt(process.env.FEEDGEN_PORT)) !== null && _c !== void 0 ? _c : 3000,
-        listenhost: (_d = maybeStr(process.env.FEEDGEN_LISTENHOST)) !== null && _d !== void 0 ? _d : 'localhost',
-        sqliteLocation: (_e = maybeStr(process.env.FEEDGEN_SQLITE_LOCATION)) !== null && _e !== void 0 ? _e : ':memory:',
-        subscriptionEndpoint: (_f = maybeStr(process.env.FEEDGEN_SUBSCRIPTION_ENDPOINT)) !== null && _f !== void 0 ? _f : 'wss://bsky.network',
-        publisherDid: (_g = maybeStr(process.env.FEEDGEN_PUBLISHER_DID)) !== null && _g !== void 0 ? _g : 'did:example:alice',
-        subscriptionReconnectDelay: (_h = maybeInt(process.env.FEEDGEN_SUBSCRIPTION_RECONNECT_DELAY)) !== null && _h !== void 0 ? _h : 3000,
+        port: (_a = maybeInt(process.env.PORT)) !== null && _a !== void 0 ? _a : 80,
+        listenhost: exports.FEEDGEN_HOSTNAME,
+        sqliteLocation: (_b = maybeStr(process.env.FEEDGEN_SQLITE_LOCATION)) !== null && _b !== void 0 ? _b : ':memory:',
+        subscriptionEndpoint: (_c = maybeStr(process.env.FEEDGEN_SUBSCRIPTION_ENDPOINT)) !== null && _c !== void 0 ? _c : 'wss://bsky.network',
+        publisherDid: exports.FEEDGEN_PUBLISHER_DID,
+        subscriptionReconnectDelay: (_d = maybeInt(process.env.FEEDGEN_SUBSCRIPTION_RECONNECT_DELAY)) !== null && _d !== void 0 ? _d : 3000,
         hostname,
-        serviceDid,
+        serviceDid: `did:web:${exports.FEEDGEN_HOSTNAME}`,
     });
     yield server.start();
-    console.log(`🤖 running feed generator at http://${server.cfg.listenhost}:${server.cfg.port}`);
+    console.log(`🤖 running feed generator at ${server.cfg.listenhost}:${server.cfg.port}`);
 });
 const maybeStr = (val) => {
     if (!val)
