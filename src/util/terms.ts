@@ -117,6 +117,7 @@ const locationKeywords = [
   'Westwood Highlands',
   'Westwood Park',
   'Yerba Buena Island',
+  'San Francisco'
 ]
 
 const techKeywords = [
