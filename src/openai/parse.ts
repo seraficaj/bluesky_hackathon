@@ -9,6 +9,33 @@ type EventInfo = {
     location: string
 }
 
+function extractUserIdAndKeyId(url: string): { userId: string, keyId: string } | null {
+    const pattern = /at:\/\/did:plc:(.+?)\/app\.bsky\.feed\.post\/(.+)/;
+    const match = url.match(pattern);
+    if (match) {
+        return { userId: match[1], keyId: match[2] };
+    } else {
+        return null;
+    }
+}
+
+
+export function convertAtUrlToClickableLink(d: string) {
+    let result = extractUserIdAndKeyId(d
+    );
+
+    if (!result) {
+        return ""
+    }
+
+    let url = `https://bsky.app/profile/did:plc:${result['userId']}/post/${result['keyId']}`
+
+    console.log(url)
+    return url;
+}
+
+convertAtUrlToClickableLink('at://did:plc:mywmpivhufzgn4f2a2v7fba4/app.bsky.feed.post/3kmbolycc4k2e')
+
 export default async function parsePost(post: string): Promise<EventInfo | null> {
     const completion = await openai.chat.completions.create({
         messages: [{
