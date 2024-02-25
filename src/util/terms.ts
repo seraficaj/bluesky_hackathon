@@ -1,4 +1,5 @@
 const locationKeywords = [
+  ' SF ',
   'Alamo Square',
   'Anza Vista',
   'Ashbury Heights',
