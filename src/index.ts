@@ -5,7 +5,7 @@ import FeedGenerator from './server'
 // You can find your accounts DID by going to
 // https://bsky.social/xrpc/com.atproto.identity.resolveHandle?handle=${YOUR_HANDLE}
 export const FEEDGEN_PUBLISHER_DID = 'did:plc:5s4zztsxcuzb66q6cjumqwqr'
-export const FEEDGEN_HOSTNAME = 'y.com'
+export const FEEDGEN_HOSTNAME = 'bluesky-sf-irl-05af32605927.herokuapp.com'
 
 const run = async () => {
   dotenv.config()

@@ -2,14 +2,16 @@ import dotenv from 'dotenv'
 import { AtpAgent, BlobRef } from '@atproto/api'
 import fs from 'fs/promises'
 import { ids } from '../src/lexicon/lexicons'
-import { FEEDGEN_HOSTNAME, FEEDGEN_PUBLISHER_DID } from '../src/index'
+
+export const FEEDGEN_PUBLISHER_DID = 'did:plc:5s4zztsxcuzb66q6cjumqwqr'
+export const FEEDGEN_HOSTNAME = 'bluesky-sf-irl-05af32605927.herokuapp.com'
 
 const run = async () => {
   dotenv.config()
 
   // THESE TWO SHOULD BE FILLED OUT IN .env
-  const handle = process.env.HANDLE ?? ''
-  const password = process.env.APP_PASSWORD ?? ''
+  const handle = process.env.HANDLE
+  const password = process.env.APP_PASSWORD
 
   // A short name for the record that will show in urls
   // Lowercase with no spaces.
@@ -18,11 +20,11 @@ const run = async () => {
 
   // A display name for your feed
   // Ex: What's Hot
-  const displayName = 'Hackathon Test'
+  const displayName = 'San Francisco IRL'
 
   // (Optional) A description of your feed
   // Ex: Top trending content from the whole network
-  const description = 'Showing posts with #hack-bluesky'
+  const description = 'In-Person Events for Tech Professionals'
 
   // (Optional) The path to an image to be used as your feed's avatar
   // Ex: ~/path/to/avatar.jpeg
@@ -40,6 +42,8 @@ const run = async () => {
   // only update this if in a test environment
   const agent = new AtpAgent({ service: 'https://bsky.social' })
   await agent.login({ identifier: handle, password })
+
+  console.log(feedGenDid, FEEDGEN_HOSTNAME, FEEDGEN_PUBLISHER_DID)
 
   let avatarRef: BlobRef | undefined
   if (avatar) {
