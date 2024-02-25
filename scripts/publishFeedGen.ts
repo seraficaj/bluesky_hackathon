@@ -10,8 +10,8 @@ const run = async () => {
   dotenv.config()
 
   // THESE TWO SHOULD BE FILLED OUT IN .env
-  const handle = process.env.HANDLE
-  const password = process.env.APP_PASSWORD
+  const handle = process.env.HANDLE ?? ''
+  const password = process.env.APP_PASSWORD ?? ''
 
   // A short name for the record that will show in urls
   // Lowercase with no spaces.
