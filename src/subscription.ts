@@ -2,6 +2,7 @@ import {
   OutputSchema as RepoEvent,
   isCommit,
 } from './lexicon/types/com/atproto/sync/subscribeRepos'
+import parsePost from './openai/parse';
 import { FirehoseSubscriptionBase, getOpsByType } from './util/subscription'
 import { locationKeywords, techKeywords } from './util/terms'
 
@@ -31,9 +32,6 @@ export class FirehoseSubscription extends FirehoseSubscriptionBase {
       .filter((create) => {
         // only alf-related posts
 
-
-
-
         if (
           authorsTable[create.author] ||
           matchesKeywordCaseInsensitive(create.record.text.toLowerCase(), locationKeywords)
@@ -46,6 +44,7 @@ export class FirehoseSubscription extends FirehoseSubscriptionBase {
       .map((create) => {
         // map alf-related posts to a db row
         console.log(create)
+
         return {
           uri: create.uri,
           cid: create.cid,
@@ -53,8 +52,23 @@ export class FirehoseSubscription extends FirehoseSubscriptionBase {
           replyRoot: create.record?.reply?.root.uri ?? null,
           indexedAt: new Date().toISOString(),
           author: create.author,
+          text: create.record.text
         }
       })
+
+    let rr = await postsToCreate.map(async (create) => {
+      try {
+
+        let post = await parsePost(create.text)
+
+        // REPOST
+
+
+      } catch (e) {
+        console.log(e)
+      }
+    })
+
 
     postsToCreate.map(({ author }) => {
       authorsTable[author] = true
@@ -66,10 +80,17 @@ export class FirehoseSubscription extends FirehoseSubscriptionBase {
         .where('uri', 'in', postsToDelete)
         .execute()
     }
-    if (postsToCreate.length > 0) {
+
+    let p2c = postsToCreate.map((a) => {
+      //@ts-ignore
+      delete a['text']
+      return a;
+    }
+    )
+    if (p2c.length > 0) {
       await this.db
         .insertInto('post')
-        .values(postsToCreate)
+        .values(p2c)
         .onConflict((oc) => oc.doNothing())
         .execute()
     }
