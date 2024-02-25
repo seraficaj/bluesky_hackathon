@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import OpenAI from "openai";
 const openai = new OpenAI();
 
@@ -12,7 +13,9 @@ export default async function parsePost(post: string): Promise<EventInfo | null>
     const completion = await openai.chat.completions.create({
         messages: [{
             role: "user", content: `Please extract time and date, and location information, as JSON. 
-        
+
+        Today's date is ${dayjs()}
+
         Return three fields, 'time' 'date' and 'location'.
         
         Time should be formatted like this: HH:MM am
