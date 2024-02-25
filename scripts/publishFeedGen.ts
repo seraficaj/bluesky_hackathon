@@ -28,7 +28,7 @@ const run = async () => {
 
   // (Optional) The path to an image to be used as your feed's avatar
   // Ex: ~/path/to/avatar.jpeg
-  const avatar: string = '../src/assets/logo.svg'
+  const avatar: string = '../src/assets/logo.jpg'
 
   // -------------------------------------
   // NO NEED TO TOUCH ANYTHING BELOW HERE
