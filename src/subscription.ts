@@ -33,8 +33,10 @@ export class FirehoseSubscription extends FirehoseSubscriptionBase {
         // only alf-related posts
 
         if (
-          authorsTable[create.author] ||
+          authorsTable[create.author] || (
           matchesKeywordCaseInsensitive(create.record.text.toLowerCase(), locationKeywords)
+
+          && matchesKeywordCaseInsensitive(create.record.text.toLowerCase(), techKeywords))
         )
           // check if text contains text content from 1st array and 2nd array
           // define arrays 1 and 2
