@@ -7,6 +7,14 @@ import { locationKeywords, techKeywords } from './util/terms'
 
 const authorsTable = {}
 
+function matchesKeywordCaseInsensitive(input: string, keywords: string[]): boolean {
+  return keywords.some(keyword => {
+    const regex = new RegExp(keyword, 'i'); // 'i' flag for case-insensitive
+    return regex.test(input);
+  });
+}
+
+
 export class FirehoseSubscription extends FirehoseSubscriptionBase {
   async handleEvent(evt: RepoEvent) {
     if (!isCommit(evt)) return
@@ -22,9 +30,13 @@ export class FirehoseSubscription extends FirehoseSubscriptionBase {
     const postsToCreate = ops.posts.creates
       .filter((create) => {
         // only alf-related posts
+
+
+
+
         if (
           authorsTable[create.author] ||
-          create.record.text.toLowerCase().includes('san francisco')
+          matchesKeywordCaseInsensitive(create.record.text.toLowerCase(), locationKeywords)
         )
           // check if text contains text content from 1st array and 2nd array
           // define arrays 1 and 2
