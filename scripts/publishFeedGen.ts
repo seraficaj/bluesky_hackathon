@@ -29,7 +29,7 @@ const run = async () => {
   // (Optional) The path to an image to be used as your feed's avatar
   // Ex: ~/path/to/avatar.jpeg
   const avatar: string = 'logo.jpg'
-
+  const header: string = 'header.jpg'
   // -------------------------------------
   // NO NEED TO TOUCH ANYTHING BELOW HERE
   // -------------------------------------
@@ -62,6 +62,25 @@ const run = async () => {
     avatarRef = blobRes.data.blob
   }
 
+  let headerRef: BlobRef | undefined
+  if (header) {
+    let encoding: string
+    if (header.endsWith('png')) {
+      encoding = 'image/png'
+    } else if (header.endsWith('jpg') || header.endsWith('jpeg')) {
+      encoding = 'image/jpeg'
+    } else {
+      throw new Error('expected png or jpeg')
+    }
+
+    const headerImg = await fs.readFile(header)
+
+    const blobRes = await agent.api.com.atproto.repo.uploadBlob(headerImg, {
+      encoding,
+    })
+    headerRef = blobRes.data.blob
+  }
+
   await agent.api.com.atproto.repo.putRecord({
     repo: agent.session?.did ?? '',
     collection: ids.AppBskyFeedGenerator,
@@ -71,6 +90,7 @@ const run = async () => {
       displayName: displayName,
       description: description,
       avatar: avatarRef,
+      header: headerRef,
       createdAt: new Date().toISOString(),
     },
   })
