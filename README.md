@@ -1,6 +1,20 @@
-# ATProto Feed Generator
+# SkyGaze Feb 2024 Hackathon 
 
-This is a starter kit for creating ATProto Feed Generators. It's not feature complete, but should give you a good starting ground off of which to build and deploy a feed.
+- Team SF IRL
+- This project is forked from the [feed generator](https://github.com/skygaze-ai/feed-generator-typescript) from SkyGaze.io
+
+The technologies used for this project include:
+- TypeScript
+- BlueSky's APIs for Creating and Viewing Feeds
+- OpenAI LLM and API
+
+Team Members:
+- [Conner Finnegan](https://github.com/skygaze-ai/feed-generator-typescript)
+- [Daniel Jacobs](https://github.com/djacobs7)
+- [Jason Serafica](https://github.com/seraficaj)
+- [Blair Kim](https://github.com/oleekim)
+
+My responsibility in this project was to deploy our custom Feed Generator on Heroku. My teammates created an algorithm that detected if a post on BlueSky was both relevant to San Francisco and about tech industry-focused events using keyword matching and OpenAI's LLMs. If a post contained enough details to populate a data object including location, time, and focus on the event, a BlueSky bot would make a post formatting the data into basic details anyone can read on its feed. This bot is also part of this project and can be viewed on the `openai` branch.
 
 ## Overview
 
